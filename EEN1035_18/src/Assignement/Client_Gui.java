@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+//this is a test
 
 @SuppressWarnings("serial")
 public class Client_Gui extends JFrame implements AdjustmentListener, ActionListener, WindowListener
