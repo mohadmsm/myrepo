@@ -88,6 +88,7 @@ public class Client_Gui extends JFrame implements  ActionListener, WindowListene
 	
 	}
 	public static void main(String[] args) {
+
 		new Client_Gui();
 	}
 

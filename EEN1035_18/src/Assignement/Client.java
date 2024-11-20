@@ -29,7 +29,7 @@ import java.awt.event.WindowListener;
 import java.io.*;
 
 @SuppressWarnings("serial")
-public class Client extends JFrame implements ActionListener, WindowListener,KeyListener{
+public class Client extends JFrame implements ActionListener, WindowListener,KeyListener, Serializable{
 	
 	private static int portNumber = 5050;
     private Socket socket = null;
@@ -107,6 +107,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		this.slider2.addChangeListener(e -> updateText(Sensor2, slider2));
 		this.slider3.addChangeListener(e -> updateText(Sensor3, slider3));
 		this.Connect.addActionListener(this);
+		this.ChangeName.addActionListener(this);
 		this.updateText(Sensor1, slider1);
 		this.updateText(Sensor2, slider2);
 		this.updateText(Sensor3, slider3);
@@ -138,19 +139,21 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
         }
 		return true;
     }
-
-    private void getDate() {
-    	String theDateCommand = "GetDate", theDateAndTime;
-    	System.out.println("01. -> Sending Command (" + theDateCommand + ") to the server...");
-    	this.send(theDateCommand);
-    	try{
-    		theDateAndTime = (String) receive();
+     
+    private void SendObject() {
+    	//String theDateCommand = "GetDate", theDateAndTime;
+    	//System.out.println("01. -> Sending Command (" + theDateCommand + ") to the server...");
+    	SensorObject MyObject = new SensorObject(this.CN.getText(),12,54,24,12);
+    	System.out.println(MyObject.display());
+    	this.send(MyObject);
+    	/*try{
+    		String theDateAndTime = (String) receive();
     		System.out.println("05. <- The Server responded with: ");
     		System.out.println("    <- " + theDateAndTime);
     	}
     	catch (Exception e){
     		System.out.println("XX. There was an invalid object sent back from the server");
-    	}
+    	}*/
     	System.out.println("06. -- Disconnected from Server.");
     }
 	
@@ -222,10 +225,12 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(Connect)) {
-			System.out.println("here");
 			if (!this.connectToServer(serverIP)) {
 	    		System.out.println("XX. Failed to open socket connection to: " + serverIP);            
-	    	}
+	    	}		
+		}
+		if(e.getSource().equals(ChangeName)) {
+			this.SendObject();
 		}
 	}
 	@Override
