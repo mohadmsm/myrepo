@@ -6,11 +6,15 @@ import java.io.Serializable;
 public class SensorObject implements Serializable {
 	private String Name;
 	private Integer V1, V2, V3;
-	public SensorObject(String Name, Integer V1, Integer V2, Integer V3) {
-		this.Name = Name; this.V1= V1; this.V2= V2; this.V3= V3;
+	private Boolean s;
+	public SensorObject(String Name, Integer V1, Integer V2, Integer V3, Boolean s) {
+		this.Name = Name; this.V1= V1; this.V2= V2; this.V3= V3; this.s = s;
 	}
     public String getName() {
         return Name;
+    }
+    public Boolean getStatus() {
+    	return s;
     }
     public int getValue(int SensorNm) {
     	if (SensorNm ==1) {return V1;}

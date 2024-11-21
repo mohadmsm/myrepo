@@ -42,13 +42,18 @@ public class ThreadedConnectionHandler extends Thread
             Object s =  is.readObject();
             if(s instanceof SensorObject) {
             	SensorObject data = (SensorObject) s;
+            	if(data.getStatus() == false) {
+            		System.out.println("Closing the Socket");
+            		this.closeSocket();
+            		return false;
+            	}
                 System.out.println(" <- Received a CustomData object:-> ");
                 System.out.println("    Name: " + data.getName());
                 System.out.println("    Value: " + data.getValue(1));
             } else {
                 System.out.println("XX. Received an unknown object type.");	
             }
-            System.out.println("recived object");
+            System.out.println("-------------------------------------------");
         } 
         catch (Exception e){   // catch a general exception
             System.out.println("XX. Error in readCommand: " + e);

@@ -7,41 +7,26 @@
 package Assignement;
 
 import java.net.*;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 
 @SuppressWarnings("serial")
-public class Client extends JFrame implements ActionListener, WindowListener,KeyListener, Serializable{
+public class Client extends JFrame implements ActionListener, WindowListener,KeyListener, Runnable{
 	
 	private static int portNumber = 5050;
     private Socket socket = null;
-    private ObjectOutputStream os = null;
+    private ObjectOutputStream os = null;// TODO Auto-generated method stub
     private ObjectInputStream is = null;
     private JButton Connect, ChangeName;
 	private JTextField Sensor1,Sensor2,Sensor3;
 	private JLabel CN, temp, Sound, Humidity;
 	private JSlider slider1, slider2, slider3;
 	private String serverIP;
+	private Boolean Status = false;
+	private Thread thread;
 	// the constructor expects the IP address of the server - the port is fixed
     public Client(String serverIP, String DeviceName) {
     	this.serverIP = serverIP;
@@ -118,6 +103,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		this.Sensor1.addKeyListener(this);
 		this.Sensor2.addKeyListener(this);
 		this.Sensor3.addKeyListener(this);
+		this.thread = new Thread(this);
     	
     }
     private void updateText(JTextField sensor, JSlider slider) {
@@ -145,7 +131,8 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     private void SendObject() {
     	//String theDateCommand = "GetDate", theDateAndTime;
     	//System.out.println("01. -> Sending Command (" + theDateCommand + ") to the server...");
-    	SensorObject MyObject = new SensorObject(this.CN.getText(),Integer.parseInt(this.Sensor1.getText()),Integer.parseInt(this.Sensor2.getText()),Integer.parseInt(this.Sensor3.getText()));
+    	SensorObject MyObject = new SensorObject(this.CN.getText(),Integer.parseInt(this.Sensor1.getText()),
+    			Integer.parseInt(this.Sensor2.getText()),Integer.parseInt(this.Sensor3.getText()), this.Status);
     	this.send(MyObject);
     	/*try{
     		String theDateAndTime = (String) receive();
@@ -155,7 +142,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     	catch (Exception e){
     		System.out.println("XX. There was an invalid object sent back from the server");
     	}*/
-    	System.out.println("06. -- Disconnected from Server.");
+    	//System.out.println("06. -- Disconnected from Server.");
     }
 	
     // method to send a generic object.
@@ -226,12 +213,22 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(Connect)) {
+			if(!this.Status) {
 			if (!this.connectToServer(serverIP)) {
 	    		System.out.println("XX. Failed to open socket connection to: " + serverIP);            
 	    	}
 			else {
+				Status = true;
 				this.Connect.setText("Connected");
 				this.Connect.setForeground(Color.green);
+				this.thread.start();
+			}}
+			else {
+				Status = false;
+				this.Connect.setText("Connect");
+				this.Connect.setForeground(Color.black);
+				//this.thread.suspend();
+				this.SendObject();
 			}
 		}
 		if(e.getSource().equals(ChangeName)) {
@@ -270,6 +267,20 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void run() {
+		while(Status) {
+			this.SendObject();
+			try {
+				Thread.sleep(5000);
+			}catch(InterruptedException e) {
+				System.out.println("Thread was Interrupted");
+			}
+			
+			
+		}
 		
 	}
 	
