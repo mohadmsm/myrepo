@@ -157,20 +157,6 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		}
     }
 
-    // method to receive a generic object.
-   /* private Object receive() 
-    {
-		Object o = null;
-		try {
-			System.out.println("03. -- About to receive an object...");
-		    o = is.readObject();
-		    System.out.println("04. <- Object received...");
-		} 
-	    catch (Exception e) {
-		    System.out.println("XX. Exception Occurred on Receiving:" + e.toString());
-		}
-		return o;
-    }*/
 
     public static void main(String args[]) 
     {
@@ -235,7 +221,6 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 			String s = JOptionPane.showInputDialog(this, "Enter the device Name?", 
 					"A Question", JOptionPane.QUESTION_MESSAGE);
 			this.CN.setText("Device "+ s);
-			//this.SendObject();
 		}
 	}
 	@Override
@@ -265,9 +250,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		}
 	}
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void keyReleased(KeyEvent e) {	
 	}
 	@Override
 	public void run() {
@@ -278,8 +261,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 			}catch(InterruptedException e) {
 				System.out.println("Thread was Interrupted");
 			}
-			
-			
+						
 		}
 		
 	}

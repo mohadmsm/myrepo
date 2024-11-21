@@ -5,7 +5,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class SensorObject implements Serializable {
 	private String Name;
-	private Integer V1, V2, V3;
+	private Integer ID, V1, V2, V3;
 	private Boolean s;
 	public SensorObject(String Name, Integer V1, Integer V2, Integer V3, Boolean s) {
 		this.Name = Name; this.V1= V1; this.V2= V2; this.V3= V3; this.s = s;
@@ -15,6 +15,12 @@ public class SensorObject implements Serializable {
     }
     public Boolean getStatus() {
     	return s;
+    }
+    public void setID(int ID) {
+    	this.ID = ID;
+    }
+    public Integer getID() {
+    	return this.ID;
     }
     public int getValue(int SensorNm) {
     	if (SensorNm ==1) {return V1;}

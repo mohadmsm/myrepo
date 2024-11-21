@@ -4,19 +4,38 @@
 
 package Assignement;
 import java.net.*;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.*;
 
-public class ThreadedServer 
+public class ThreadedServer extends JFrame implements ActionListener, WindowListener, Runnable 
 {
 	private static int portNumber = 5050;
+	boolean listening = true;
+    ServerSocket serverSocket = null;
+	public ThreadedServer() {
+		JPanel hp = new JPanel();
+		hp.setLayout(new BoxLayout(hp, BoxLayout.Y_AXIS));
+		this.getContentPane().add(hp);
+		
+	}
 	
 	public static void main(String args[]) {
-		
-		boolean listening = true;
-        ServerSocket serverSocket = null;
+		new ThreadedServer();
         
-        // Set up the Server Socket
-        try 
+    }
+
+	@Override
+	public void run() {
+
+		try 
         {
             serverSocket = new ServerSocket(portNumber);
             System.out.println("New Server has started listening on port: " + portNumber );
@@ -47,8 +66,11 @@ public class ThreadedServer
             con.start(); 
             System.out.println("02. -- Finished communicating with client:" + clientSocket.getInetAddress().toString());
         }
-        // Server is no longer listening for client connections - time to shut down.
-        try 
+		
+	}
+
+	private void closeSocket() {
+		try 
         {
             System.out.println("04. -- Closing down the server socket gracefully.");
             serverSocket.close();
@@ -57,5 +79,50 @@ public class ThreadedServer
         {
             System.err.println("XX. Could not close server socket. " + e.getMessage());
         }
-    }
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) { System.exit(0);}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	} 
 }
