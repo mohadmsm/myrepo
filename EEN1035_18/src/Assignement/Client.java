@@ -12,11 +12,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -143,8 +145,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     private void SendObject() {
     	//String theDateCommand = "GetDate", theDateAndTime;
     	//System.out.println("01. -> Sending Command (" + theDateCommand + ") to the server...");
-    	SensorObject MyObject = new SensorObject(this.CN.getText(),12,54,24,12);
-    	System.out.println(MyObject.display());
+    	SensorObject MyObject = new SensorObject(this.CN.getText(),Integer.parseInt(this.Sensor1.getText()),Integer.parseInt(this.Sensor2.getText()),Integer.parseInt(this.Sensor3.getText()));
     	this.send(MyObject);
     	/*try{
     		String theDateAndTime = (String) receive();
@@ -170,7 +171,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     }
 
     // method to receive a generic object.
-    private Object receive() 
+   /* private Object receive() 
     {
 		Object o = null;
 		try {
@@ -182,7 +183,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		    System.out.println("XX. Exception Occurred on Receiving:" + e.toString());
 		}
 		return o;
-    }
+    }*/
 
     public static void main(String args[]) 
     {
@@ -227,10 +228,17 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		if(e.getSource().equals(Connect)) {
 			if (!this.connectToServer(serverIP)) {
 	    		System.out.println("XX. Failed to open socket connection to: " + serverIP);            
-	    	}		
+	    	}
+			else {
+				this.Connect.setText("Connected");
+				this.Connect.setForeground(Color.green);
+			}
 		}
 		if(e.getSource().equals(ChangeName)) {
-			this.SendObject();
+			String s = JOptionPane.showInputDialog(this, "Enter the device Name?", 
+					"A Question", JOptionPane.QUESTION_MESSAGE);
+			this.CN.setText("Device "+ s);
+			//this.SendObject();
 		}
 	}
 	@Override

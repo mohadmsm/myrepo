@@ -37,17 +37,26 @@ public class ThreadedConnectionHandler extends Thread
 
     // Receive and process incoming string commands from client socket 
     private boolean readCommand() {
-        Object s = null; //don't use this for the assignment use obj
+       //Object s = null; //don't use this for the assignment use obj
         try {
-            s =  is.readObject();
+            Object s =  is.readObject();
+            if(s instanceof SensorObject) {
+            	SensorObject data = (SensorObject) s;
+                System.out.println(" <- Received a CustomData object:-> ");
+                System.out.println("    Name: " + data.getName());
+                System.out.println("    Value: " + data.getValue(1));
+            } else {
+                System.out.println("XX. Received an unknown object type.");	
+            }
             System.out.println("recived object");
         } 
-        catch (Exception e){    // catch a general exception
+        catch (Exception e){   // catch a general exception
+            System.out.println("XX. Error in readCommand: " + e);
         	this.closeSocket();
             return false;
         }
         //System.out.println("01. <- Received a String object from the client (" + s + ").");
-        System.out.println("01. <- Received a an object from the client (" + s + ").");
+        //System.out.println("01. <- Received a an object from the client (" + s + ").");
         
         // At this point there is a valid String object
         // invoke the appropriate function based on the command 
