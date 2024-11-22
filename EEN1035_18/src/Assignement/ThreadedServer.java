@@ -4,26 +4,40 @@
 
 package Assignement;
 import java.net.*;
-
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
 import java.io.*;
 
+@SuppressWarnings("serial")
 public class ThreadedServer extends JFrame implements ActionListener, WindowListener, Runnable 
 {
 	private static int portNumber = 5050;
 	boolean listening = true;
     ServerSocket serverSocket = null;
+    private MyCanvas plot = new MyCanvas();
+    private JButton start;
+    private Thread thread;
+    private JList<String> ClientList;
 	public ThreadedServer() {
 		JPanel hp = new JPanel();
 		hp.setLayout(new BoxLayout(hp, BoxLayout.Y_AXIS));
+		JPanel p;
 		this.getContentPane().add(hp);
+		p = new JPanel();
+		p.setLayout(new FlowLayout());
+		p.add(plot);
+		hp.add(p, BorderLayout.CENTER);
+		p = new JPanel();
+		p.setLayout(new FlowLayout());
+		start = new JButton("run the server");
+		this.start.addActionListener(this);
+		p.add(start);
+		hp.add(p);
+		this.pack();
+		this.addWindowListener(this);
+		this.setVisible(true);
+		this.thread = new Thread(this);
 		
 	}
 	
@@ -60,6 +74,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
             catch (IOException e){
                 System.out.println("XX. Accept failed: " + portNumber + e);
                 listening = false;   // end the loop - stop listening for further client requests
+                closeSocket();
             }	
             
             ThreadedConnectionHandler con = new ThreadedConnectionHandler(clientSocket);
@@ -80,6 +95,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
             System.err.println("XX. Could not close server socket. " + e.getMessage());
         }
 	}
+	
 
 	@Override
 	public void windowOpened(WindowEvent e) {
@@ -88,7 +104,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e) { System.exit(0);}
+	public void windowClosing(WindowEvent e) { closeSocket(); System.exit(0);}
 
 	@Override
 	public void windowClosed(WindowEvent e) {
@@ -116,13 +132,14 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if(e.getSource().equals(start)) {
+			this.thread.start();
+		}
 		
 	} 
 }
