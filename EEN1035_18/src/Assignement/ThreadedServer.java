@@ -145,6 +145,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	                    currentSelectedClient = index;
 	                    plot.rePlot(stack); // Update the canvas with the selected client's averages
 	                } else {
+	                	currentSelectedClient = -1;
 	                    plot.updateAverages(0, 0, 0); // No data for the selected client
 	                }
 	            } catch (Exception e) {
