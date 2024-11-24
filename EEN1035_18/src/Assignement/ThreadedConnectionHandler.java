@@ -13,10 +13,12 @@ public class ThreadedConnectionHandler extends Thread
     private Socket clientSocket = null;				// Client socket object
     private ObjectInputStream is = null;			// Input stream
     private ObjectOutputStream os = null;			// Output stream
-    List<Stack<SensorObject>> sensorStacksList = new ArrayList<>();
+    public static List<Stack<SensorObject>> sensorStacksList = new ArrayList<>();
+    private ThreadedServer server;
 	// The constructor for the connection handler
-    public ThreadedConnectionHandler(Socket clientSocket) {
+    public ThreadedConnectionHandler(Socket clientSocket, ThreadedServer server) {
         this.clientSocket = clientSocket;
+        this.server = server;
     }
 
     // Will eventually be the thread execution method - can't pass the exception back
@@ -54,6 +56,10 @@ public class ThreadedConnectionHandler extends Thread
                     Stack<SensorObject> stack = findOrCreateStack(data.getID());
                     if (stack.size()==10) {stack.remove(0);}
                     stack.push(data);
+                    if (sensorStacksList.indexOf(stack) == server.currentSelectedClient) {
+                        server.findAvg(stack); // Recalculate averages and repaint the canvas
+                    }
+                    //server.findAvg(stack);
                 }            	
             } else {
                 System.out.println("XX. Received an unknown object type.");	
@@ -113,6 +119,7 @@ public class ThreadedConnectionHandler extends Thread
     public void sendError(String message) { 
         this.send("Error:" + message);	//remember a String IS-A Object!
     }
+    
     
     // Close the client socket 
     public void closeSocket() { //gracefully close the socket connection

@@ -9,6 +9,7 @@ public class SensorObject implements Serializable {
 	private Boolean s;
 	public SensorObject(String Name, Integer V1, Integer V2, Integer V3, Boolean s) {
 		this.Name = Name; this.V1= V1; this.V2= V2; this.V3= V3; this.s = s;
+
 	}
     public String getName() {
         return Name;

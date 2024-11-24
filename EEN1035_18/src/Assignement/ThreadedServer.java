@@ -4,10 +4,12 @@
 
 package Assignement;
 import java.net.*;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
+import java.util.Stack;
 
 @SuppressWarnings("serial")
 public class ThreadedServer extends JFrame implements ActionListener, WindowListener, Runnable 
@@ -18,28 +20,51 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
     private MyCanvas plot = new MyCanvas();
     private JButton start;
     private Thread thread;
-    private JList<String> ClientList;
+	private List  ClientList;
+	int currentSelectedClient = -1;
 	public ThreadedServer() {
-		JPanel hp = new JPanel();
-		hp.setLayout(new BoxLayout(hp, BoxLayout.Y_AXIS));
-		JPanel p;
-		this.getContentPane().add(hp);
-		p = new JPanel();
-		p.setLayout(new FlowLayout());
-		p.add(plot);
-		hp.add(p, BorderLayout.CENTER);
-		p = new JPanel();
-		p.setLayout(new FlowLayout());
-		start = new JButton("run the server");
-		this.start.addActionListener(this);
-		p.add(start);
-		hp.add(p);
-		this.pack();
-		this.addWindowListener(this);
-		this.setVisible(true);
-		this.thread = new Thread(this);
+		// Main panel with vertical layout to stack sections
+	    JPanel mainPanel = new JPanel();
+	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+	    this.getContentPane().add(mainPanel);
+
+	    // Section 1: Plot Panel
+	    JPanel plotPanel = new JPanel(new BorderLayout());
+	    plotPanel.setBorder(BorderFactory.createTitledBorder("Plot Section"));
+	    plotPanel.add(plot, BorderLayout.CENTER);
+	    mainPanel.add(plotPanel);
+	 // Section 2: Control Panel
+	    JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    controlPanel.setBorder(BorderFactory.createTitledBorder("Server Control"));
+	    start = new JButton("Run the Server");
+	    this.start.addActionListener(this);
+	    controlPanel.add(start);
+	    mainPanel.add(controlPanel);
+
+	    // Section 3: Client List Panel
+	    JPanel clientPanel = new JPanel(new BorderLayout());
+	    clientPanel.setBorder(BorderFactory.createTitledBorder("Client List"));
+	    ClientList = new List(6, false);
+	    for (int i = 0; i < 5; i++) {
+	        ClientList.add("Client" + (i + 1));
+	    }
+	    ClientList.add("Average");
+	    ClientList.addActionListener(e -> onClientSelected());
+	    clientPanel.add(ClientList, BorderLayout.CENTER);
+	    mainPanel.add(clientPanel);
+	 // Final adjustments
+	    this.pack();
+	    this.setTitle("Threaded Server GUI");
+	    this.setVisible(true);
+
+	    // Initialize server thread
+	    this.thread = new Thread(this);
+	    this.addWindowListener(this);
 		
 	}
+	public void findAvg(Stack<SensorObject> stack) {
+        plot.findAvg(stack); // Update canvas with new averages
+    }
 	
 	public static void main(String args[]) {
 		new ThreadedServer();
@@ -77,7 +102,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
                 closeSocket();
             }	
             
-            ThreadedConnectionHandler con = new ThreadedConnectionHandler(clientSocket);
+            ThreadedConnectionHandler con = new ThreadedConnectionHandler(clientSocket, this);
             con.start(); 
             System.out.println("02. -- Finished communicating with client:" + clientSocket.getInetAddress().toString());
         }
@@ -95,6 +120,25 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
             System.err.println("XX. Could not close server socket. " + e.getMessage());
         }
 	}
+	 private void onClientSelected() {
+	        String selectedClient = ClientList.getSelectedItem();
+	        if (selectedClient != null) {
+	            try {
+	                // Retrieve the index of the selected client
+	                int index = ClientList.getSelectedIndex();
+	                if (index >= 0 && index < ThreadedConnectionHandler.sensorStacksList.size()) {
+	                    Stack<SensorObject> stack = ThreadedConnectionHandler.sensorStacksList.get(index);
+	                    currentSelectedClient = index;
+	                    plot.findAvg(stack); // Update the canvas with the selected client's averages
+	                } else {
+	                    plot.updateAverages(0, 0, 0); // No data for the selected client
+	                }
+	            } catch (Exception e) {
+	                System.err.println("Error selecting client: " + e.getMessage());
+	                plot.updateAverages(0, 0, 0);
+	            }
+	        }
+	    }
 	
 
 	@Override
@@ -104,7 +148,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e) { closeSocket(); System.exit(0);}
+	public void windowClosing(WindowEvent e) { if (serverSocket!=null) {closeSocket(); }System.exit(0);}
 
 	@Override
 	public void windowClosed(WindowEvent e) {
@@ -123,7 +167,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub

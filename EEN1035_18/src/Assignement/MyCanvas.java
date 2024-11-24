@@ -1,21 +1,42 @@
 package Assignement;
 
 import java.awt.*;
+import java.util.*;
 
 
 @SuppressWarnings("serial")
 public class MyCanvas extends Canvas {
 	private double [] RecivedValues= new double[10];
+	private double tempAvg, humidityAvg, soundAvg;
 	public MyCanvas () {
 		
-		this.setPreferredSize(new Dimension(400,400));
+		this.setPreferredSize(new Dimension(800,400));
 		 for (int i = 0; i < 10; i++) {
 			 RecivedValues[i]= i *10 + 3;
 		 }
 	}
+    public void updateAverages(double temp, double sound, double humidity) {
+        this.tempAvg = temp;
+        this.soundAvg =  sound;
+        this.humidityAvg = humidity;
+        repaint();
+    }
+    public void findAvg(Stack<SensorObject> stack) {
+    	double temp=0,sound=0,hum=0;
+    	for (Object o : stack) {
+    		SensorObject sensor = (SensorObject) o;
+    		temp += sensor.getValue(1);
+    		sound += sensor.getValue(2);
+    		hum +=sensor.getValue(3);
+    	}
+    	temp = temp/stack.size();
+    	sound = sound/stack.size();
+    	hum = hum/stack.size();
+    	updateAverages(temp, sound, hum);
+    }
 	public void paint(Graphics g) {
-		int width = getWidth();
-        int height = getHeight();
+		int width = 400;
+        int height = 400;
 
         // Draw background
         g.setColor(Color.WHITE);
@@ -49,10 +70,32 @@ public class MyCanvas extends Canvas {
         	int x = 50 + ((i+1) * (xAxisLength) / 10); // Start from 1
             int y = (int) (height - 50 - (RecivedValues[i] * (height - 100) / 100)); // Scale y (0-100)
             g.fillOval(x - 3, y - 3, 6, 6); // Draw point as a small circle
-            g.setColor(Color.GRAY);
-            //g.drawline(x,y,);
         }
+     // Draw the gauge for average values
+        drawGauge(g, width + 50, 100, "Temperature Avg", tempAvg, Color.BLUE);
+        drawGauge(g, width + 50, 200, "Humidity Avg", humidityAvg, Color.GREEN);
+        drawGauge(g, width + 50, 300, "Sound Avg", soundAvg, Color.ORANGE);
 		
 	}
+    private void drawGauge(Graphics g, int x, int y, String label, double value, Color color) {
+        int gaugeWidth = 150;
+        int gaugeHeight = 30;
+
+        // Draw background of the gauge
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(x, y, gaugeWidth, gaugeHeight);
+
+        // Draw filled part of the gauge based on value (scale 0-100)
+        int filledWidth = (int) (value * gaugeWidth / 100); // Scale value to gauge width
+        g.setColor(color);
+        g.fillRect(x, y, filledWidth, gaugeHeight);
+
+        // Draw gauge border
+        g.setColor(Color.BLACK);
+        g.drawRect(x, y, gaugeWidth, gaugeHeight);
+
+        // Draw label and value
+        g.drawString(label + ": " + String.format("%.2f", value), x, y - 5);
+    }
 
 }
