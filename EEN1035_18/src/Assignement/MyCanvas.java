@@ -83,7 +83,7 @@ public class MyCanvas extends Canvas {
         if (showTemp) drawPlot(g, tempVal, Color.RED);
         if (showHumidity) drawPlot(g, humVal, Color.GREEN);
         if (showSound) drawPlot(g, soundVal, Color.BLUE);
-        
+        g.setColor(Color.BLACK);
         g.drawString("Device Name: "+ dName,width + 50,50);
      // Draw the gauge for average values
         drawGauge(g, width + 50, 100, "Temperature Avg", tempAvg, Color.BLUE);
@@ -119,11 +119,9 @@ public class MyCanvas extends Canvas {
              g.fillOval(x - 3, y - 3, 6, 6); // Draw point as a small circle
          }
     	 for (int i = 0; i < RecivedValues.length - 1; i++) {
-    	        // Calculate the x and y positions for the first point
     	        int x1 = 50 + ((i+1) * (300) / 10); // x position for the i-th value
     	        int y1 = (int) (400 - 50 - (RecivedValues[i] * (400 - 100) / 100)); // y position for the i-th value
 
-    	        // Calculate the x and y positions for the next point
     	        int x2 = 50 + ((i + 2) * (300) / 10); // x position for the (i+1)-th value
     	        int y2 = (int) (400 - 50 - (RecivedValues[i + 1] * (400 - 100) / 100)); // y position for the (i+1)-th value
 
