@@ -13,6 +13,7 @@ public class MyCanvas extends Canvas {
     private boolean showTemp = false;
     private boolean showHumidity = false;
     private boolean showSound = false;
+    private String dName;
 	public MyCanvas () {
 		
 		this.setPreferredSize(new Dimension(800,400));
@@ -36,6 +37,7 @@ public class MyCanvas extends Canvas {
             humVal[i] = sensor.getValue(3); // Humidity
             soundVal[i] = sensor.getValue(2); // Sound
             i++;
+            this.dName = sensor.getName();         
     	}
     	temp = temp/stack.size();
     	sound = sound/stack.size();
@@ -82,7 +84,7 @@ public class MyCanvas extends Canvas {
         if (showHumidity) drawPlot(g, humVal, Color.GREEN);
         if (showSound) drawPlot(g, soundVal, Color.BLUE);
         
-       
+        g.drawString("Device Name: "+ dName,width + 50,50);
      // Draw the gauge for average values
         drawGauge(g, width + 50, 100, "Temperature Avg", tempAvg, Color.BLUE);
         drawGauge(g, width + 50, 200, "Humidity Avg", humidityAvg, Color.GREEN);

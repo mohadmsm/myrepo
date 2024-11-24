@@ -4,7 +4,6 @@
 
 package Assignement;
 import java.net.*;
-
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -64,7 +63,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	        ClientList.add("Client" + (i + 1));
 	    }
 	    ClientList.add("Average");
-	    ClientList.addActionListener(e -> onClientSelected());
+	    ClientList.addActionListener(this);
 	    clientPanel.add(ClientList, BorderLayout.CENTER);
 	    mainPanel.add(clientPanel);
 	    this.pack();
@@ -81,8 +80,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
     }
 	
 	public static void main(String args[]) {
-		new ThreadedServer();
-        
+		new ThreadedServer();      
     }
 
 	@Override
@@ -203,6 +201,10 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 			 plot.setPlotVisibility(tempSwitch.isSelected(), soundSwitch.isSelected(), humiditySwitch.isSelected());      
 		        
 		    }
-		
+		if (e.getSource().equals(ClientList)) {
+			onClientSelected();
+		}
 	} 
+		
+		
 }

@@ -9,12 +9,14 @@ package Assignement;
 import java.net.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
 @SuppressWarnings("serial")
-public class Client extends JFrame implements ActionListener, WindowListener,KeyListener, Runnable{
+public class Client extends JFrame implements ChangeListener, ActionListener, WindowListener,KeyListener, Runnable{
 	
 	private static int portNumber = 5050;
     private Socket socket = null;
@@ -100,9 +102,9 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		p.add(ChangeName);
 		hp.add(p);
 		this.pack();
-		this.slider1.addChangeListener(e -> updateText(Sensor1, slider1));
-		this.slider2.addChangeListener(e -> updateText(Sensor2, slider2));
-		this.slider3.addChangeListener(e -> updateText(Sensor3, slider3));
+		this.slider1.addChangeListener(this);
+		this.slider2.addChangeListener(this);
+		this.slider3.addChangeListener(this);
 		this.Connect.addActionListener(this);
 		this.ChangeName.addActionListener(this);
 		this.updateText(Sensor1, slider1);
@@ -283,6 +285,20 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 			}
 						
 		}
+		
+	}
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(e.getSource().equals(slider1)) {
+			updateText(Sensor1, slider1);
+		}
+		if(e.getSource().equals(slider2)) {
+			updateText(Sensor2, slider2);
+		}
+		if(e.getSource().equals(slider3)) {
+			updateText(Sensor3, slider3);
+		}
+		// TODO Auto-generated method stub
 		
 	}
 	
