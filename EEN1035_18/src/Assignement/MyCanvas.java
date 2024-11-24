@@ -2,6 +2,7 @@ package Assignement;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 
 @SuppressWarnings("serial")
@@ -50,6 +51,43 @@ public class MyCanvas extends Canvas {
         this.showHumidity = showHumidity;
         this.showSound = showSound;
         repaint();
+    }
+    public synchronized void FindAvg(List<Stack<SensorObject>> sensorStacksList) {
+        double totalTempAvg = 0, totalSoundAvg = 0, totalHumidityAvg = 0;
+        int clientCount = 0;
+        double [] temp= new double[10];
+        double [] sound= new double[10];
+        double [] hum= new double[10];
+            for (Stack<SensorObject> stack : sensorStacksList) {
+                if (!stack.isEmpty()) {
+                    double tempSum = 0, soundSum = 0, humSum = 0;
+                    int i = 0;
+                    for (SensorObject sensor : stack) {
+                        tempSum += sensor.getValue(1);
+                        soundSum += sensor.getValue(2);
+                        humSum += sensor.getValue(3);
+                        temp[i] += sensor.getValue(1);
+                        sound[i]+= sensor.getValue(2);
+                        hum [i] += sensor.getValue(3);
+                        i++;
+                    }
+                    int stackSize = stack.size();
+                    totalTempAvg += tempSum / stackSize;
+                    totalSoundAvg += soundSum / stackSize;
+                    totalHumidityAvg += humSum / stackSize;
+                    clientCount++;
+                }         
+            }
+            for(int i=0; i<temp.length;i++) {
+            	temp[i] = temp[i]/clientCount;
+            	sound[i] = sound[i]/clientCount;
+            	hum[i] = hum[i]/clientCount;
+            }
+            totalTempAvg = totalTempAvg/clientCount;
+            totalSoundAvg = totalSoundAvg /clientCount;
+            totalHumidityAvg = totalHumidityAvg/clientCount;
+            this.tempVal = temp; this.soundVal = sound; this.humVal = hum;
+            updateAverages(totalTempAvg, totalSoundAvg,totalHumidityAvg);      
     }
 	public void paint(Graphics g) {
 		int width = 400;

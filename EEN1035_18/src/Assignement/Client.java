@@ -122,7 +122,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 		sensor.setText(String.valueOf(slider.getValue()));		
 	}
     private int addNoise(int value) {
-        int noise = (int) (Math.random() * 10) - 4; // Generates a random number between -5 and 5
+        int noise = (int) (Math.random() * 10) - 4; // Generates a random number 
         int noisyValue = value + noise;
         return noisyValue;}
     private boolean connectToServer(String serverIP) {

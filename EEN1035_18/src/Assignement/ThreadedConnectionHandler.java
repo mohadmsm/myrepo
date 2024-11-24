@@ -49,6 +49,7 @@ public class ThreadedConnectionHandler extends Thread
             		synchronized (sensorStacksList) {
             		Stack<SensorObject> stack = findOrCreateStack(data.getID());
             		sensorStacksList.remove(stack);
+            		
             		}
             		return false;
             	}
@@ -59,6 +60,9 @@ public class ThreadedConnectionHandler extends Thread
                     stack.push(data);
                     if (sensorStacksList.indexOf(stack) == server.currentSelectedClient) {
                         server.rePlot(stack);
+                    }
+                    else if(server.currentSelectedClient == 5) {
+                    	server.FindAvg();
                     }
                     //server.findAvg(stack);
                 }            	

@@ -78,7 +78,8 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	public void rePlot(Stack<SensorObject> stack) {
         plot.rePlot(stack); // Update canvas with new averages
     }
-	
+	public void FindAvg() {
+	plot.FindAvg(ThreadedConnectionHandler.sensorStacksList);}
 	public static void main(String args[]) {
 		new ThreadedServer();      
     }
@@ -136,9 +137,13 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	        String selectedClient = ClientList.getSelectedItem();
 	        if (selectedClient != null) {
 	            try {
-	                // Retrieve the index of the selected client
-	                int index = ClientList.getSelectedIndex();
-	                if (index >= 0 && index < ThreadedConnectionHandler.sensorStacksList.size()) {
+	            	int index = ClientList.getSelectedIndex();
+	            	if("Average".equals(selectedClient))
+	            	{  plot.FindAvg(ThreadedConnectionHandler.sensorStacksList);
+	            	currentSelectedClient = index ; // 5 is the avg , 
+	            	}
+	                
+	                else if (index >= 0 && index < ThreadedConnectionHandler.sensorStacksList.size()) {
 	                    Stack<SensorObject> stack = ThreadedConnectionHandler.sensorStacksList.get(index);
 	                    currentSelectedClient = index;
 	                    plot.rePlot(stack); // Update the canvas with the selected client's averages
