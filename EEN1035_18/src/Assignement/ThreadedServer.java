@@ -22,18 +22,33 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
     private Thread thread;
 	private List  ClientList;
 	int currentSelectedClient = -1;
+	private JCheckBox  tempSwitch, soundSwitch, humiditySwitch;
 	public ThreadedServer() {
 		// Main panel with vertical layout to stack sections
 	    JPanel mainPanel = new JPanel();
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 	    this.getContentPane().add(mainPanel);
-
-	    // Section 1: Plot Panel
+	    
+	    // Section 1: Switch Panel
+	    JPanel switchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    switchPanel.setBorder(BorderFactory.createTitledBorder("Switches"));
+	    tempSwitch = new JCheckBox ("Temp");
+	    soundSwitch = new JCheckBox ("Sound");
+	    humiditySwitch =new JCheckBox ("Humidity");
+	    switchPanel.add(tempSwitch);
+	    switchPanel.add(soundSwitch);
+	    switchPanel.add(humiditySwitch);
+	    mainPanel.add(switchPanel);
+	    this.tempSwitch.addActionListener(this);
+	    this.soundSwitch.addActionListener(this);
+	    this.humiditySwitch.addActionListener(this);
+	    // Section 2: Plot Panel
 	    JPanel plotPanel = new JPanel(new BorderLayout());
 	    plotPanel.setBorder(BorderFactory.createTitledBorder("Plot Section"));
 	    plotPanel.add(plot, BorderLayout.CENTER);
 	    mainPanel.add(plotPanel);
-	 // Section 2: Control Panel
+	    
+	 // Section 3: Control Panel
 	    JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	    controlPanel.setBorder(BorderFactory.createTitledBorder("Server Control"));
 	    start = new JButton("Run the Server");
@@ -41,7 +56,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	    controlPanel.add(start);
 	    mainPanel.add(controlPanel);
 
-	    // Section 3: Client List Panel
+	    // Section 4: Client List Panel
 	    JPanel clientPanel = new JPanel(new BorderLayout());
 	    clientPanel.setBorder(BorderFactory.createTitledBorder("Client List"));
 	    ClientList = new List(6, false);
@@ -52,18 +67,17 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	    ClientList.addActionListener(e -> onClientSelected());
 	    clientPanel.add(ClientList, BorderLayout.CENTER);
 	    mainPanel.add(clientPanel);
-	 // Final adjustments
 	    this.pack();
 	    this.setTitle("Threaded Server GUI");
 	    this.setVisible(true);
 
-	    // Initialize server thread
+
 	    this.thread = new Thread(this);
 	    this.addWindowListener(this);
 		
 	}
-	public void findAvg(Stack<SensorObject> stack) {
-        plot.findAvg(stack); // Update canvas with new averages
+	public void rePlot(Stack<SensorObject> stack) {
+        plot.rePlot(stack); // Update canvas with new averages
     }
 	
 	public static void main(String args[]) {
@@ -129,7 +143,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	                if (index >= 0 && index < ThreadedConnectionHandler.sensorStacksList.size()) {
 	                    Stack<SensorObject> stack = ThreadedConnectionHandler.sensorStacksList.get(index);
 	                    currentSelectedClient = index;
-	                    plot.findAvg(stack); // Update the canvas with the selected client's averages
+	                    plot.rePlot(stack); // Update the canvas with the selected client's averages
 	                } else {
 	                    plot.updateAverages(0, 0, 0); // No data for the selected client
 	                }
@@ -184,6 +198,10 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 		if(e.getSource().equals(start)) {
 			this.thread.start();
 		}
+		if (e.getSource().equals(tempSwitch) || e.getSource().equals(soundSwitch) || e.getSource().equals(humiditySwitch)) {
+			 plot.setPlotVisibility(tempSwitch.isSelected(), soundSwitch.isSelected(), humiditySwitch.isSelected());      
+		        
+		    }
 		
 	} 
 }

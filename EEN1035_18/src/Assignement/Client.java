@@ -22,11 +22,12 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     private ObjectInputStream is = null;
     private JButton Connect, ChangeName;
 	private JTextField Sensor1,Sensor2,Sensor3;
-	private JLabel CN, temp, Sound, Humidity;
+	private JLabel CN, temp, Sound, Humidity, noiseL;
 	private JSlider slider1, slider2, slider3;
 	private String serverIP;
 	private Boolean Status = false;
 	private Thread thread;
+	private JCheckBox  noiseBox;
 	// the constructor expects the IP address of the server - the port is fixed
     public Client(String serverIP, String DeviceName) {
     	this.serverIP = serverIP;
@@ -53,7 +54,7 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		p.add(Sensor1);
 		p.add(slider1);
 		hp.add(p);
-		// Sensor 2 CO2 Level
+		// Sensor 2 Sound Level
 		Sound = new JLabel("Sound Level    ");
 		Sensor2 = new JTextField(5);
 		slider2 = new JSlider(-10, 100, 20);
@@ -67,19 +68,28 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
 		p.add(Sensor2);
 		p.add(slider2);
 		hp.add(p);
-		// Sensor 3 Pressure
+		// Sensor 3 humidity
 		Humidity = new JLabel("Humidity Level ");
 		Sensor3 = new JTextField(5);
 		slider3 = new JSlider(-10, 100, 20);
 		p = new JPanel();
 		p.setLayout(new FlowLayout());
-		p.setBorder(new TitledBorder("Sensor 2"));
+		p.setBorder(new TitledBorder("Sensor 3"));
 		slider3 = new JSlider(0, 100, 20);
 		slider3.setPaintTicks(true);
 		slider3.setMajorTickSpacing(10);
 		p.add(Humidity);	
 		p.add(Sensor3);
 		p.add(slider3);
+		hp.add(p);
+		//noise 
+		p = new JPanel();
+		p.setLayout(new GridLayout(1, 2));
+		p.setBorder(new TitledBorder("Real life Signals"));
+		noiseL = new JLabel("Add Noise");
+		noiseBox = new JCheckBox();
+		p.add(noiseL);
+		p.add(noiseBox);
 		hp.add(p);
 		// buttons 
 		Connect = new JButton("connect");
@@ -109,7 +119,10 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     private void updateText(JTextField sensor, JSlider slider) {
 		sensor.setText(String.valueOf(slider.getValue()));		
 	}
-
+    private int addNoise(int value) {
+        int noise = (int) (Math.random() * 10) - 4; // Generates a random number between -5 and 5
+        int noisyValue = value + noise;
+        return noisyValue;}
     private boolean connectToServer(String serverIP) {
     	try { // open a new socket to the server 
     		this.socket = new Socket(serverIP,portNumber);
@@ -129,10 +142,17 @@ public class Client extends JFrame implements ActionListener, WindowListener,Key
     }
      
     private void SendObject() {
-    	//String theDateCommand = "GetDate", theDateAndTime;
-    	//System.out.println("01. -> Sending Command (" + theDateCommand + ") to the server...");
-    	SensorObject MyObject = new SensorObject(this.CN.getText(),Integer.parseInt(this.Sensor1.getText()),
-    			Integer.parseInt(this.Sensor2.getText()),Integer.parseInt(this.Sensor3.getText()), this.Status);
+    	int tempValue = Integer.parseInt(this.Sensor1.getText());
+        int soundValue = Integer.parseInt(this.Sensor2.getText());
+        int humidityValue = Integer.parseInt(this.Sensor3.getText());
+
+        // Add noise if the checkbox is selected
+        if (noiseBox.isSelected()) {
+            tempValue = addNoise(tempValue);
+            soundValue = addNoise(soundValue);
+            humidityValue = addNoise(humidityValue);
+        }
+    	SensorObject MyObject = new SensorObject(this.CN.getText(),tempValue, soundValue,humidityValue, this.Status);
     	this.send(MyObject);
     	/*try{
     		String theDateAndTime = (String) receive();

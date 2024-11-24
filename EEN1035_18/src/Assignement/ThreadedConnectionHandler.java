@@ -42,6 +42,7 @@ public class ThreadedConnectionHandler extends Thread
             Object s =  is.readObject();
             if(s instanceof SensorObject) {
             	SensorObject data = (SensorObject) s;
+            	data.setID(clientSocket.getPort());
             	if(data.getStatus() == false) {
             		System.out.println("Closing the Socket");
             		this.closeSocket();
@@ -51,13 +52,13 @@ public class ThreadedConnectionHandler extends Thread
             		}
             		return false;
             	}
-            	data.setID(clientSocket.getPort());
+            	
             	synchronized (sensorStacksList) {
                     Stack<SensorObject> stack = findOrCreateStack(data.getID());
                     if (stack.size()==10) {stack.remove(0);}
                     stack.push(data);
                     if (sensorStacksList.indexOf(stack) == server.currentSelectedClient) {
-                        server.findAvg(stack); // Recalculate averages and repaint the canvas
+                        server.rePlot(stack);
                     }
                     //server.findAvg(stack);
                 }            	
