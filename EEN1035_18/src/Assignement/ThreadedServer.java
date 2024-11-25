@@ -206,7 +206,9 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 			if(serverSocket ==null) {
 			start.setText("Running");
 			this.start.setForeground(Color.green);
-			this.thread.start();}
+			this.thread.start();
+			
+			}
 			else {
 				closeSocket();
 				start.setText("Run the Server");
