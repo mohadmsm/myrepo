@@ -80,6 +80,9 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
     }
 	public void FindAvg() {
 	plot.FindAvg(ThreadedConnectionHandler.sensorStacksList);}
+	public void disconnectClient() {
+		plot.disconnectClient();
+	}
 	public static void main(String args[]) {
 		new ThreadedServer();      
     }
@@ -149,7 +152,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	                    plot.rePlot(stack); // Update the canvas with the selected client's averages
 	                } else {
 	                	currentSelectedClient = -1;
-	                    plot.updateAverages(0, 0, 0); // No data for the selected client
+	                    plot.disconnectClient(); // No data for the selected client
 	                }
 	            } catch (Exception e) {
 	                System.err.println("Error selecting client: " + e.getMessage());
@@ -200,7 +203,15 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(start)) {
-			this.thread.start();
+			if(serverSocket ==null) {
+			start.setText("Running");
+			this.start.setForeground(Color.green);
+			this.thread.start();}
+			else {
+				closeSocket();
+				start.setText("Run the Server");
+				this.start.setForeground(Color.BLACK);
+			}
 		}
 		if (e.getSource().equals(tempSwitch) || e.getSource().equals(soundSwitch) || e.getSource().equals(humiditySwitch)) {
 			 plot.setPlotVisibility(tempSwitch.isSelected(), soundSwitch.isSelected(), humiditySwitch.isSelected());      

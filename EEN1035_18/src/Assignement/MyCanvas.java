@@ -45,6 +45,14 @@ public class MyCanvas extends Canvas {
     	hum = hum/stack.size();
     	updateAverages(temp, sound, hum);
     }
+    public void  disconnectClient() {
+    	this.dName = "Device is disconnected";
+    	this.tempVal = new double[10];  // Reset to an empty array
+        this.soundVal = new double[10];
+        this.humVal = new double[10];
+        updateAverages(0,0,0);
+    	repaint();
+    }
  
     public void setPlotVisibility(boolean showTemp, boolean showSound, boolean showHumidity) {
         this.showTemp = showTemp;
@@ -117,12 +125,12 @@ public class MyCanvas extends Canvas {
             g.drawLine(45, y, 55, y);
             g.drawString(Integer.toString(i * 10), 20, y + 5);
         }
-
+        g.setColor(Color.BLACK);
+        if(dName == "Device is disconnected") {g.setColor(Color.RED);}
+        g.drawString("Device Name: "+ dName,width + 50,50);
         if (showTemp) drawPlot(g, tempVal, Color.RED);
         if (showHumidity) drawPlot(g, humVal, Color.GREEN);
-        if (showSound) drawPlot(g, soundVal, Color.BLUE);
-        g.setColor(Color.BLACK);
-        g.drawString("Device Name: "+ dName,width + 50,50);
+        if (showSound) drawPlot(g, soundVal, Color.BLUE);      
      // Draw the gauge for average values
         drawGauge(g, width + 50, 100, "Temperature Avg", tempAvg, Color.BLUE);
         drawGauge(g, width + 50, 200, "Humidity Avg", humidityAvg, Color.GREEN);

@@ -13,7 +13,7 @@ public class ThreadedConnectionHandler extends Thread
     private Socket clientSocket = null;				// Client socket object
     private ObjectInputStream is = null;			// Input stream
     private ObjectOutputStream os = null;			// Output stream
-    public static List<Stack<SensorObject>> sensorStacksList = new ArrayList<>();
+    static List<Stack<SensorObject>> sensorStacksList = new ArrayList<>();
     private ThreadedServer server;
 	// The constructor for the connection handler
     public ThreadedConnectionHandler(Socket clientSocket, ThreadedServer server) {
@@ -36,7 +36,7 @@ public class ThreadedConnectionHandler extends Thread
     }
 
     // Receive and process incoming string commands from client socket 
-    private boolean readCommand() {
+    private synchronized boolean readCommand() {
        //Object s = null; //don't use this for the assignment use obj
         try {
             Object s =  is.readObject();
@@ -46,11 +46,11 @@ public class ThreadedConnectionHandler extends Thread
             	if(data.getStatus() == false) {
             		System.out.println("Closing the Socket");
             		this.closeSocket();
-            		synchronized (sensorStacksList) {
             		Stack<SensorObject> stack = findOrCreateStack(data.getID());
-            		sensorStacksList.remove(stack);
-            		
+            		if (sensorStacksList.indexOf(stack) == server.currentSelectedClient) {
+            			server.disconnectClient();
             		}
+            		sensorStacksList.remove(stack);
             		return false;
             	}
             	

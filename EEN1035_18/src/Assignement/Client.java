@@ -125,6 +125,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
         int noise = (int) (Math.random() * 10) - 4; // Generates a random number 
         int noisyValue = value + noise;
         return noisyValue;}
+    
     private boolean connectToServer(String serverIP) {
     	try { // open a new socket to the server 
     		this.socket = new Socket(serverIP,portNumber);
@@ -201,7 +202,9 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 	public void windowOpened(WindowEvent e) {}
 
 	@Override
-	public void windowClosing(WindowEvent e) { System.exit(0);}
+	public void windowClosing(WindowEvent e) { if(socket !=null) {Status = false; this.SendObject();}
+	
+	System.exit(0);}
 
 	@Override
 	public void windowClosed(WindowEvent e) {}
@@ -298,7 +301,6 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 		if(e.getSource().equals(slider3)) {
 			updateText(Sensor3, slider3);
 		}
-		// TODO Auto-generated method stub
 		
 	}
 	
