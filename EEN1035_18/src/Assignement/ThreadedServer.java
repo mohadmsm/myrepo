@@ -111,16 +111,17 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
                 System.out.println("00. <- Accepted socket connection from a client: ");
                 System.out.println("    <- with address: " + clientSocket.getInetAddress().toString());
                 System.out.println("    <- and port number: " + clientSocket.getPort());
+                ThreadedConnectionHandler con = new ThreadedConnectionHandler(clientSocket, this);
+                con.start(); 
             } 
             catch (IOException e){
-                System.out.println("XX. Accept failed: " + portNumber + e);
-                listening = false;   // end the loop - stop listening for further client requests
-                closeSocket();
-            }	
-            
-            ThreadedConnectionHandler con = new ThreadedConnectionHandler(clientSocket, this);
-            con.start(); 
-            System.out.println("02. -- Finished communicating with client:" + clientSocket.getInetAddress().toString());
+            	if (!listening) {
+                    System.out.println("Server has stopped listening for connections.");
+                    break; // Exit the loop if the server is no longer listening
+                }
+                System.out.println("XX. Accept failed: " + e.getMessage());
+            }
+            closeSocket();   
         }
 		
 	}
@@ -169,7 +170,7 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e) { if (serverSocket!=null) {closeSocket(); }System.exit(0);}
+	public void windowClosing(WindowEvent e) { if (serverSocket!=null) {listening = false; }System.exit(0);}
 
 	@Override
 	public void windowClosed(WindowEvent e) {
@@ -204,12 +205,14 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(start)) {
 			if(serverSocket ==null) {
+			listening = true;
 			start.setText("Running");
 			this.start.setForeground(Color.green);
 			this.thread.start();
 			
 			}
 			else {
+				listening = false;
 				closeSocket();
 				start.setText("Run the Server");
 				this.start.setForeground(Color.BLACK);
