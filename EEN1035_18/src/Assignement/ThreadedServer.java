@@ -120,9 +120,9 @@ public class ThreadedServer extends JFrame implements ActionListener, WindowList
                     break; // Exit the loop if the server is no longer listening
                 }
                 System.out.println("XX. Accept failed: " + e.getMessage());
-            }
-            closeSocket();   
+            }   
         }
+        closeSocket(); 
 		
 	}
 

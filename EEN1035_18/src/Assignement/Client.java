@@ -184,7 +184,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
     public static void main(String args[]) 
     {
     	System.out.println("**. Java Client Application - EE402 OOP Module, DCU");
-    	if(args.length>=1){
+    	if(args.length>1){
     
     		new Client(args[0],args[1]);
 		    //theApp.getDate();
@@ -195,7 +195,6 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
     		System.out.println("Usage is:  java Client x.x.x.x ClientName  (e.g. java Client 192.168.7.2 Mohammed)");
     		System.out.println("      or:  java Client hostname ClientName (e.g. java Client localhost Salim)");
     	}    
-    	System.out.println("**. End of Application.");
     }
 
 	@Override

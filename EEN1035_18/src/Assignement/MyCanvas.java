@@ -94,6 +94,7 @@ public class MyCanvas extends Canvas {
             totalSoundAvg = totalSoundAvg /clientCount;
             totalHumidityAvg = totalHumidityAvg/clientCount;
             this.tempVal = temp; this.soundVal = sound; this.humVal = hum;
+            this.dName = "Average";
             updateAverages(totalTempAvg, totalSoundAvg,totalHumidityAvg);      
     }
 	public void paint(Graphics g) {
@@ -131,9 +132,9 @@ public class MyCanvas extends Canvas {
         if (showHumidity) drawPlot(g, humVal, Color.GREEN);
         if (showSound) drawPlot(g, soundVal, Color.BLUE);      
      // Draw the gauge for average values
-        drawGauge(g, width + 50, 100, "Temperature Avg", tempAvg, Color.BLUE);
+        drawGauge(g, width + 50, 100, "Temperature Avg", tempAvg, Color.RED);
         drawGauge(g, width + 50, 200, "Humidity Avg", humidityAvg, Color.GREEN);
-        drawGauge(g, width + 50, 300, "Sound Avg", soundAvg, Color.ORANGE);
+        drawGauge(g, width + 50, 300, "Sound Avg", soundAvg, Color.BLUE);
 		
 	}
     private void drawGauge(Graphics g, int x, int y, String label, double value, Color color) {
