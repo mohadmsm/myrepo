@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-
 @SuppressWarnings("serial")
 public class MyCanvas extends Canvas {
 	private double [] tempVal= new double[10];

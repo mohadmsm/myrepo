@@ -191,9 +191,9 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 		}
     	else
     	{
-    		System.out.println("Error: you must provide the address of the server");
-    		System.out.println("Usage is:  java Client x.x.x.x  (e.g. java Client 192.168.7.2)");
-    		System.out.println("      or:  java Client hostname (e.g. java Client localhost)");
+    		System.out.println("Error: you must provide the address of the server and client name");
+    		System.out.println("Usage is:  java Client x.x.x.x ClientName  (e.g. java Client 192.168.7.2 Mohammed)");
+    		System.out.println("      or:  java Client hostname ClientName (e.g. java Client localhost Salim)");
     	}    
     	System.out.println("**. End of Application.");
     }

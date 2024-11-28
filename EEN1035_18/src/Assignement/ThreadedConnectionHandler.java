@@ -54,7 +54,6 @@ public class ThreadedConnectionHandler extends Thread
             		return false;
             	}
             	
-            	synchronized (sensorStacksList) {
                     Stack<SensorObject> stack = findOrCreateStack(data.getID());
                     if (stack.size()==10) {stack.remove(0);}
                     stack.push(data);
@@ -65,7 +64,7 @@ public class ThreadedConnectionHandler extends Thread
                     	server.FindAvg();
                     }
                     //server.findAvg(stack);
-                }            	
+                            	
             } else {
                 System.out.println("XX. Received an unknown object type.");	
             }
@@ -124,8 +123,7 @@ public class ThreadedConnectionHandler extends Thread
     public void sendError(String message) { 
         this.send("Error:" + message);	//remember a String IS-A Object!
     }
-    
-    
+     
     // Close the client socket 
     public void closeSocket() { //gracefully close the socket connection
         try {
