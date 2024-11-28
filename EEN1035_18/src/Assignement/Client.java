@@ -202,8 +202,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 	public void windowOpened(WindowEvent e) {}
 
 	@Override
-	public void windowClosing(WindowEvent e) { if(socket !=null|!Status) {Status = false; this.SendObject();}
-	
+	public void windowClosing(WindowEvent e) { if(socket !=null| Status) {Status = false; this.SendObject();}
 	System.exit(0);}
 
 	@Override
