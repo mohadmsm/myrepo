@@ -1,8 +1,3 @@
-/* The Client Class - Written by Derek Molloy for the EE402 Module
- * See: ee402.eeng.dcu.ie
- * 
- * 
- */
 
 package Assignement;
 
@@ -20,7 +15,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 	
 	private static int portNumber = 5050;
     private Socket socket = null;
-    private ObjectOutputStream os = null;// TODO Auto-generated method stub
+    private ObjectOutputStream os = null;
     private ObjectInputStream is = null;
     private JButton Connect, ChangeName;
 	private JTextField Sensor1,Sensor2,Sensor3;
@@ -157,15 +152,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
         }
     	SensorObject MyObject = new SensorObject(this.CN.getText(),tempValue, soundValue,humidityValue, this.Status);
     	this.send(MyObject);
-    	/*try{
-    		String theDateAndTime = (String) receive();
-    		System.out.println("05. <- The Server responded with: ");
-    		System.out.println("    <- " + theDateAndTime);
-    	}
-    	catch (Exception e){
-    		System.out.println("XX. There was an invalid object sent back from the server");
-    	}*/
-    	//System.out.println("06. -- Disconnected from Server.");
+    	
     }
 	
     // method to send a generic object.
@@ -283,10 +270,8 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 				Thread.sleep(5000);
 			}catch(InterruptedException e) {
 				System.out.println("Thread was Interrupted");
-			}
-						
-		}
-		
+			}				
+		}	
 	}
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -298,8 +283,7 @@ public class Client extends JFrame implements ChangeListener, ActionListener, Wi
 		}
 		if(e.getSource().equals(slider3)) {
 			updateText(Sensor3, slider3);
-		}
-		
+		}	
 	}
 	
 }

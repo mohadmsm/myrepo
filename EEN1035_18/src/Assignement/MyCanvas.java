@@ -26,6 +26,9 @@ public class MyCanvas extends Canvas {
         repaint();
     }
     public void rePlot(Stack<SensorObject> stack) {
+    	this.tempVal = new double[10];  // Reset to an empty array
+        this.soundVal = new double[10];
+        this.humVal = new double[10];
     	double temp=0,sound=0,hum=0;
     	int i=0;
     	for (Object o : stack) {
